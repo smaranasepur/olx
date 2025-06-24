@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Define URLs and filenames
+URL="https://www.amfiindia.com/spages/NAVAll.txt"
+OUTPUT_FILE="nav_data.tsv"
+
+# Download the file
+curl -s "$URL" -o nav_data.txt
+
+# Extract relevant fields: Scheme Name (4th) and NAV (5th), skip headers and blank lines
+awk -F ';' 'NF > 4 && $1 ~ /^[0-9]/ { print $4 "\t" $5 }' nav_data.txt > "$OUTPUT_FILE"
+
+echo "Extraction complete. Saved to $OUTPUT_FILE"
