@@ -1,0 +1,38 @@
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
+
+def scrape_olx_car_covers():
+    url = "https://www.olx.in/items/q-car-cover"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+    }
+    
+    response = requests.get(url, headers=headers)
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    listings = []
+
+    for item in soup.find_all("li", class_="css-1sw7q4x"):
+        title_tag = item.find("h6")
+        price_tag = item.find("span", class_="css-1x2l2bz")
+        location_tag = item.find("span", class_="css-1a4brun")
+
+        title = title_tag.get_text(strip=True) if title_tag else "N/A"
+        price = price_tag.get_text(strip=True) if price_tag else "N/A"
+        location = location_tag.get_text(strip=True) if location_tag else "N/A"
+        link = "https://www.olx.in" + item.a['href'] if item.a and 'href' in item.a.attrs else "N/A"
+
+        listings.append({
+            "Title": title,
+            "Price": price,
+            "Location": location,
+            "URL": link
+        })
+
+    df = pd.DataFrame(listings)
+    df.to_csv("olx_car_covers.csv", index=False, encoding='utf-8')
+    print("Scraped data saved to olx_car_covers.csv")
+
+if __name__ == "__main__":
+    scrape_olx_car_covers()
