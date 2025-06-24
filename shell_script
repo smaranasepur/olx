@@ -11,3 +11,5 @@ curl -s "$URL" -o nav_data.txt
 awk -F ';' 'NF > 4 && $1 ~ /^[0-9]/ { print $4 "\t" $5 }' nav_data.txt > "$OUTPUT_FILE"
 
 echo "Extraction complete. Saved to $OUTPUT_FILE"
+
+JSON is better if you plan to use it in applications or APIs. TSV is better for Excel/CLI usage.
